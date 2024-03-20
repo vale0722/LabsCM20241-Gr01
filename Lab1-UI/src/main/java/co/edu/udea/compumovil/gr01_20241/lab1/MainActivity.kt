@@ -1,46 +1,40 @@
 package co.edu.udea.compumovil.gr01_20241.lab1
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import co.edu.udea.compumovil.gr01_20241.lab1.ui.theme.LabsCM20241Gr01Theme
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 
-class MainActivity : ComponentActivity() {
+data class BottomNavigationItem(
+    val title: String,
+    val name: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val functions: () -> Unit,
+)
+
+class MainActivity : AppCompatActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LabsCM20241Gr01Theme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                NavigationItem()
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true, apiLevel = 33)
 @Composable
-fun GreetingPreview() {
+fun DefaultPreview() {
     LabsCM20241Gr01Theme {
-        Greeting("Android")
+        NavigationItem()
     }
 }

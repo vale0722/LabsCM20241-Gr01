@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">LabsCM20241-Gr01</string>
+    <string name="app_name">Laboratory 1</string>
+    <string name="back_button">Back</string>
+    <string name="home">Home</string>
+    <string name="contact">Contact Form</string>
+    <string name="person">Person Form</string>
+
 </resources>

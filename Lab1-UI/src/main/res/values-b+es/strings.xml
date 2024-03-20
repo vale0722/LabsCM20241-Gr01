@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Laboratorio 1</string>
+    <string name="back_button">Atrás</string>
+    <string name="home">Inicio</string>
+    <string name="contact">Formulario de contacto</string>
+    <string name="person">Formulario de persona</string>
+</resources>
