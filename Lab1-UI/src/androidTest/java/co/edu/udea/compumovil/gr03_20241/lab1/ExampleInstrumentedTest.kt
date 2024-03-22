@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr01_20241.lab1
+package co.edu.udea.compumovil.gr03_20241.lab1
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("co.edu.udea.compumovil.gr01_20241.lab1", appContext.packageName)
+        assertEquals("co.edu.udea.compumovil.gr03_20241.lab1", appContext.packageName)
     }
 }

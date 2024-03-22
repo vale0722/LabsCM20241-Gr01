@@ -4,4 +4,7 @@
     <string name="home">Inicio</string>
     <string name="contact">Añadir contacto</string>
     <string name="person">Añadir persona</string>
+    <string name="members">Realizado por:</string>
+    <string name="general_objective">Objetivo General</string>
+    <string name="general_objective_description">Construir una aplicación que permita ingresar y mostrar los datos personales de un contacto</string>
 </resources>

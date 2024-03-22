@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr01_20241.lab1
+package co.edu.udea.compumovil.gr03_20241.lab1
 
 import org.junit.Test
 

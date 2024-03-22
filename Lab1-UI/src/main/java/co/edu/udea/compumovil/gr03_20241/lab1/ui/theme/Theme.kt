@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr01_20241.lab1.ui.theme
+package co.edu.udea.compumovil.gr03_20241.lab1.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -83,7 +83,7 @@ private val LightColors = lightColorScheme(
     )
 
 @Composable
-fun LabsCM20241Gr01Theme(
+fun LabsCM20241Gr03Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,

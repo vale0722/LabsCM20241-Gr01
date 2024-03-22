@@ -4,5 +4,7 @@
     <string name="home">Home</string>
     <string name="contact">Contact Form</string>
     <string name="person">Person Form</string>
-
+    <string name="members">Made by:</string>
+    <string name="general_objective">General Objective</string>
+    <string name="general_objective_description">Build an application that allows you to enter and display a contact\'s personal data</string>
 </resources>
