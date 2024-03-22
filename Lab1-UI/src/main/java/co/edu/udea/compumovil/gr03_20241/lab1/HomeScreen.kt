@@ -35,7 +35,6 @@ fun HomeScreen() {
             style = MaterialTheme.typography.headlineMedium,
         )
 
-
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 4.dp
@@ -48,7 +47,7 @@ fun HomeScreen() {
             ),
             modifier = Modifier
                 .padding(20.dp)
-                .fillMaxWidth(),
+                .fillMaxSize(),
         ) {
             Text(
                 text = stringResource(id = R.string.general_objective),
@@ -69,7 +68,7 @@ fun HomeScreen() {
 
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
+                defaultElevation = 4.dp
             ),
             colors = CardColors(
                 containerColor = MaterialTheme.colorScheme.background,
@@ -79,12 +78,12 @@ fun HomeScreen() {
             ),
             modifier = Modifier
                 .padding(20.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
                     .padding(20.dp)
-                    .fillMaxWidth()
+                    .fillMaxSize()
             ) {
                 Text(
                     text = stringResource(id = R.string.members),

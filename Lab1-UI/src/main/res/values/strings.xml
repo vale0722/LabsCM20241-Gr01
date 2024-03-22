@@ -7,4 +7,22 @@
     <string name="members">Made by:</string>
     <string name="general_objective">General Objective</string>
     <string name="general_objective_description">Build an application that allows you to enter and display a contact\'s personal data</string>
+    <string name="name">Name</string>
+    <string name="name_placeholder">Enter a name</string>
+    <string name="lastname">Lastname</string>
+    <string name="lastname_placeholder">Enter a lastname</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="birthdate">Birthdate</string>
+    <string name="birthdate_placeholder">Enter a Birthdate</string>
+    <string name="grade">School grade</string>
+    <string name="grade_placeholder">Enter a school grade</string>
+    <string name="primary">Primary</string>
+    <string name="secondary">Secondary</string>
+    <string name="university">University</string>
+    <string name="other">Other</string>
+    <string name="error_person">The personal information entered was invalid</string>
+    <string name="success">Information created successfully</string>
+    <string name="save">Save</string>
 </resources>
