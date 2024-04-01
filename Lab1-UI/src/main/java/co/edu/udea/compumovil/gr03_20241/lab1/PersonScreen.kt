@@ -51,27 +51,22 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
-data class Personal(
-    val name: String,
-    val gender: String?,
-    val birthdate: String,
-    val grade: String?
-)
+import androidx.compose.runtime.State
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import co.edu.udea.compumovil.gr03_20241.lab1.models.PersonalViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun PersonScreen() {
-    val (name, onNameChange) = rememberSaveable { mutableStateOf("") }
+fun PersonScreen(personal: PersonalViewModel = viewModel(), navController: NavHostController = rememberNavController()) {
     val (isNameError, onNameError) = rememberSaveable { mutableStateOf(false) }
-    val (lastname, onLastnameChange) = rememberSaveable { mutableStateOf("") }
     val (isLastNameError, onLastNameError) = rememberSaveable { mutableStateOf(false) }
     val genders = listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
-    val (gender, onGender) = remember { mutableStateOf(genders[0]) }
-    val (selectedDate, onSelectedDate) = remember { mutableStateOf("") }
     val (isDateError, onDateError) = rememberSaveable { mutableStateOf(false) }
     val grades = listOf(
         stringResource(id = R.string.primary),
@@ -79,18 +74,47 @@ fun PersonScreen() {
         stringResource(id = R.string.university),
         stringResource(id = R.string.other)
     )
-    val (grade, onGradeChange) = remember { mutableStateOf(grades[0]) }
-
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val errorMessage = stringResource(id = R.string.error_person);
     val successMessage = stringResource(id = R.string.success);
+
+    val navigationActions = remember(navController) {
+        AppNavigationActions(navController)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
+        bottomBar = {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp, horizontal = 8.dp)
+                    .height(56.dp),
+                onClick = {
+                    ValidateForm(
+                        personal = personal,
+                        errorMessage = errorMessage,
+                        scope = scope,
+                        snackbarHostState = snackbarHostState,
+                        successMessage = successMessage,
+                        nameError = onNameError,
+                        lastnameError = onLastNameError,
+                        dateError = onDateError,
+                        navigationActions = navigationActions
+                    )
+                },
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Text(
+                    text = stringResource(id = R.string.next),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
     ) {
         Orientation(
             landscape = {
@@ -113,18 +137,18 @@ fun PersonScreen() {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         GetInputTextField(
-                            label = stringResource(id = R.string.name),
+                            label = stringResource(id = R.string.name) + "*",
                             placeholder = stringResource(id = R.string.name_placeholder),
-                            field = name,
-                            onFieldChange = onNameChange,
+                            field = personal.name,
+                            onFieldChange = { personal.setName(it) },
                             error = isNameError
                         )
                         Spacer(modifier = Modifier.padding(26.dp))
                         GetInputTextField(
-                            label = stringResource(id = R.string.lastname),
+                            label = stringResource(id = R.string.lastname) + "*",
                             placeholder = stringResource(id = R.string.lastname_placeholder),
-                            field = lastname,
-                            onFieldChange = onLastnameChange,
+                            field = personal.lastname,
+                            onFieldChange = { personal.setLastname(it) },
                             error = isLastNameError
                         )
                     }
@@ -134,46 +158,18 @@ fun PersonScreen() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            GetGenderField(genders, gender, onGender)
+                            GetGenderField(genders, personal.gender, { personal.setGender(it) })
                         }
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
                     GetCalendar(
-                        selectedDate = selectedDate,
-                        onSelectedDate = onSelectedDate,
+                        selectedDate = personal.birthdate,
+                        onSelectedDate = { personal.setBirthdate(it) },
                         error = isDateError
                     )
                     Spacer(modifier = Modifier.padding(4.dp))
-                    GetGradeField(grades, grade, onGradeChange)
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                            .height(56.dp),
-                        onClick = {
-                            ValidateForm(
-                                name = name,
-                                lastname = lastname,
-                                gender = gender,
-                                birthdate = selectedDate,
-                                grade = grade,
-                                errorMessage = errorMessage,
-                                snackbarHostState = snackbarHostState,
-                                scope = scope,
-                                successMessage = successMessage,
-                                nameError = onNameError,
-                                lastnameError = onLastNameError,
-                                dateError = onDateError,
-                            )
-                        },
-                        shape = MaterialTheme.shapes.extraLarge
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.save),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
+                    GetGradeField(grades, personal.grade,{ personal.setGrade(it) })
+                    Spacer(modifier = Modifier.padding(56.dp))
                 }
             },
             portrait = {
@@ -191,59 +187,31 @@ fun PersonScreen() {
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 GetInputTextField(
-                    label = stringResource(id = R.string.name),
+                    label = stringResource(id = R.string.name) + "*",
                     placeholder = stringResource(id = R.string.name_placeholder),
-                    field = name,
-                    onFieldChange = onNameChange,
+                    field = personal.name,
+                    onFieldChange = { personal.setName(it) },
                     error = isNameError
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 GetInputTextField(
-                    label = stringResource(id = R.string.lastname),
+                    label = stringResource(id = R.string.lastname) + "*",
                     placeholder = stringResource(id = R.string.lastname_placeholder),
-                    field = lastname,
-                    onFieldChange = onLastnameChange,
+                    field = personal.lastname,
+                    onFieldChange = { personal.setLastname(it) },
                     error = isLastNameError
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
-                GetGenderField(genders, gender, onGender)
+                GetGenderField(genders, personal.gender) { personal.setGender(it) }
                 Spacer(modifier = Modifier.padding(4.dp))
                 GetCalendar(
-                    selectedDate = selectedDate,
-                    onSelectedDate = onSelectedDate,
+                    selectedDate = personal.birthdate,
+                    onSelectedDate = { personal.setBirthdate(it) },
                     error = isDateError
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
-                GetGradeField(grades, grade, onGradeChange)
-                Spacer(modifier = Modifier.padding(4.dp))
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                        .height(56.dp),
-                    onClick = {
-                        ValidateForm(
-                            name = name,
-                            lastname = lastname,
-                            gender = gender,
-                            birthdate = selectedDate,
-                            grade = grade,
-                            errorMessage = errorMessage,
-                            scope = scope,
-                            snackbarHostState = snackbarHostState,
-                            successMessage = successMessage,
-                            nameError = onNameError,
-                            lastnameError = onLastNameError,
-                            dateError = onDateError,
-                        )
-                    },
-                    shape = MaterialTheme.shapes.extraLarge
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.save),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
+                GetGradeField(grades, personal.grade, { personal.setGrade(it) })
+                Spacer(modifier = Modifier.padding(56.dp))
             }
         })
     }
@@ -251,33 +219,31 @@ fun PersonScreen() {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 fun ValidateForm(
-    name: String,
-    lastname: String,
-    gender: String,
-    birthdate: String,
-    grade: String,
+    personal: PersonalViewModel,
     errorMessage: String,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
     successMessage: String,
     nameError: (Boolean) -> Unit,
     lastnameError: (Boolean) -> Unit,
-    dateError: (Boolean) -> Unit
+    dateError: (Boolean) -> Unit,
+    navigationActions: AppNavigationActions,
 ) {
+
     var hasError = false
-    if(name.isEmpty()) {
+    if(personal.name.value.isNullOrEmpty()) {
         hasError = true
         nameError(true)
     }
-    if(lastname.isEmpty()) {
+    if(personal.lastname.value.isNullOrEmpty()) {
         hasError = true
         lastnameError(true)
     }
-    if(birthdate.isEmpty()) {
+    if(personal.birthdate.value.isNullOrEmpty()) {
         hasError = true
         dateError(true)
     }
-    
+
     if(hasError) {
         scope.launch {
             snackbarHostState.showSnackbar(
@@ -294,33 +260,12 @@ fun ValidateForm(
                 message = successMessage
             )
         }
-        logInfo(Personal(
-            name = "$name $lastname",
-            gender = gender,
-            birthdate = birthdate,
-            grade = grade,
-        ))
+        navigationActions.navigateToContact()
     }
 }
 
-fun logInfo(data: Personal) {
-    Log.d("PERSONAL_INFORMATION", StringBuilder().apply {
-        append("-------------------------------------\n")
-        append("Información personal:\n")
-        append("${data.name}\n")
-        if (data.gender != null) {
-            append("${data.gender}\t\t\n")
-        }
-        append("Nació el ${data.birthdate}\n")
-        if (data.grade != null) {
-            append("${data.grade}\t\t\n")
-        }
-        append("-------------------------------------\n")
-    }.toString())
-}
-
 @Composable
-fun GetGenderField(genders: List<String>, gender: String, onGender: (String) -> Unit) {
+fun GetGenderField(genders: List<String>, gender: State<String?>, onGender: (String) -> Unit) {
     Text(
         text = stringResource(id = R.string.gender),
         style = MaterialTheme.typography.bodyLarge
@@ -332,7 +277,7 @@ fun GetGenderField(genders: List<String>, gender: String, onGender: (String) -> 
                 Modifier
                     .height(56.dp)
                     .selectable(
-                        selected = (text == gender),
+                        selected = (text == gender.value),
                         onClick = { onGender(text) },
                         role = Role.RadioButton
                     )
@@ -340,7 +285,7 @@ fun GetGenderField(genders: List<String>, gender: String, onGender: (String) -> 
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (text == gender),
+                    selected = (text == gender.value),
                     onClick = null
                 )
                 Text(
@@ -355,12 +300,12 @@ fun GetGenderField(genders: List<String>, gender: String, onGender: (String) -> 
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun GetCalendar(selectedDate: String, onSelectedDate: (String) -> Unit, error: Boolean) {
+fun GetCalendar(selectedDate: State<String?>, onSelectedDate: (String) -> Unit, error: Boolean) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance();
     OutlinedTextField(
         isError = error,
-        value = selectedDate,
+        value = selectedDate.value.toString(),
         onValueChange = { },
         label = {
             Text(stringResource(id = R.string.birthdate) + '*')
@@ -370,22 +315,32 @@ fun GetCalendar(selectedDate: String, onSelectedDate: (String) -> Unit, error: B
         },
         enabled = false,
         trailingIcon = {
-            IconButton(onClick = {
-                DatePickerDialog(
-                    context,
-                    { _, year, month, day ->
-                        onSelectedDate("$day/${month + 1}/$year")
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                ).show()
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.DateRange,
-                    contentDescription = "Date",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (error) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "Error",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+                Spacer(modifier = Modifier.padding(4.dp))
+                IconButton(onClick = {
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, day ->
+                            onSelectedDate("$day/${month + 1}/$year")
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                    ).show()
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.DateRange,
+                        contentDescription = "Date",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         },
     )
@@ -393,7 +348,7 @@ fun GetCalendar(selectedDate: String, onSelectedDate: (String) -> Unit, error: B
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GetGradeField(grades: List<String>, grade: String, onGradeChange: (String) -> Unit) {
+fun GetGradeField(grades: List<String>, grade: State<String?>, onGradeChange: (String) -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -410,9 +365,10 @@ fun GetGradeField(grades: List<String>, grade: String, onGradeChange: (String) -
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(),
                 readOnly = true,
-                value = grade,
+                value = grade.value.toString(),
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                placeholder = { Text(text = stringResource(id = R.string.grade_placeholder)) },
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -433,21 +389,31 @@ fun GetGradeField(grades: List<String>, grade: String, onGradeChange: (String) -
 }
 
 @Composable
-fun GetInputTextField(label: String, placeholder: String, field: String, onFieldChange: (String) -> Unit, error: Boolean)
+fun GetInputTextField(
+    label: String,
+    placeholder: String,
+    field: State<String?>,
+    onFieldChange: (String) -> Unit,
+    error: Boolean,
+    keyboardType: KeyboardType = KeyboardType.Text
+)
 {
+    val fieldValue = field.value ?: ""
+
     OutlinedTextField(
         modifier = Modifier,
-        value = field,
+        value = fieldValue,
         onValueChange = {
             onFieldChange(it)
         },
         label = {
-            Text("$label*")
+            Text(label)
         },
         placeholder = {
             Text(placeholder)
         },
         keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType,
             capitalization = KeyboardCapitalization.Sentences,
             autoCorrect = false
         ),

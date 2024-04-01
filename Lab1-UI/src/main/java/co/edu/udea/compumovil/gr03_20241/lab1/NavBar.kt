@@ -17,8 +17,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import co.edu.udea.compumovil.gr03_20241.lab1.models.PersonalViewModel
 
 @SuppressLint("ResourceAsColor")
 @Composable
@@ -34,17 +36,19 @@ fun NavBar(
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
                 items.forEach { item ->
-                    NavigationRailItem(
-                        icon = {
-                            Icon(
-                                if (route == item.key) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = stringResource(id = item.title)
-                            )
-                        },
-                        label = { Text(stringResource(id = item.title)) },
-                        selected = route == item.key,
-                        onClick = { item.functions.invoke() }
-                    )
+                    if(item.show) {
+                        NavigationRailItem(
+                            icon = {
+                                Icon(
+                                    if (route == item.key) item.selectedIcon else item.unselectedIcon,
+                                    contentDescription = stringResource(id = item.title)
+                                )
+                            },
+                            label = { Text(stringResource(id = item.title)) },
+                            selected = route == item.key,
+                            onClick = { item.functions.invoke() }
+                        )
+                    }
                 }
             }
         },
@@ -55,29 +59,31 @@ fun NavBar(
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
                 items.forEach { item ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                if (route == item.key) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = stringResource(id = item.title)
-                            )
-                        },
-                        label = { Text(stringResource(id = item.title)) },
-                        selected = route == item.key,
-                        onClick = { item.functions.invoke() }
-                    )
+                    if(item.show) {
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    if (route == item.key) item.selectedIcon else item.unselectedIcon,
+                                    contentDescription = stringResource(id = item.title)
+                                )
+                            },
+                            label = { Text(stringResource(id = item.title)) },
+                            selected = route == item.key,
+                            onClick = { item.functions.invoke() }
+                        )
+                    }
                 }
             }
         }
     )
 }
 
-@Preview
+@Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable
-fun NavBarPreview( navController: NavHostController = rememberNavController(),) {
+fun NavBarPreview( navController: NavHostController = rememberNavController(), personal: PersonalViewModel = viewModel()) {
     val navigationActions = remember(navController) {
         AppNavigationActions(navController)
     }
-    val routes = getDestinations(navigationActions)
+    val routes = getDestinations(navigationActions, personal)
     NavBar("Home", routes);
 }

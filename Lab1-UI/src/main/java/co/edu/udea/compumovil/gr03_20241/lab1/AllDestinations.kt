@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr03_20241.lab1
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
@@ -10,13 +11,15 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
+import co.edu.udea.compumovil.gr03_20241.lab1.models.PersonalViewModel
 
 enum class DestinationItem(
     @StringRes val title: Int,
     val key: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    var functions: () -> Unit
+    var functions: () -> Unit,
+    val show: Boolean = true
 ) {
     HOME(
         title = R.string.home,
@@ -37,7 +40,16 @@ enum class DestinationItem(
         key = "Contact",
         selectedIcon = Icons.Filled.Call,
         unselectedIcon = Icons.Outlined.Call,
-        functions = { }
+        functions = { },
+        show = false
+    ),
+    SUCCESS(
+        title = R.string.success,
+        key = "Success",
+        selectedIcon = Icons.Filled.Call,
+        unselectedIcon = Icons.Outlined.Call,
+        functions = { },
+        show = false
     );
 
     companion object {
@@ -60,18 +72,36 @@ class AppNavigationActions(private val navController: NavHostController) {
         }
     }
 
-    fun navigateToContact() {
-        navController.navigate(DestinationItem.CONTACT.key) {
+    fun navigateToSuccess() {
+        navController.navigate(DestinationItem.SUCCESS.key) {
             launchSingleTop = true
             restoreState = true
         }
     }
+
+    fun navigateToContact() {
+       try {
+           navController.navigate(DestinationItem.CONTACT.key) {
+               launchSingleTop = true
+               restoreState = true
+           }
+       } catch (e: Exception) {
+           Log.e("ERROR", e.message.toString())
+       }
+    }
 }
 
-fun getDestinations(actions: AppNavigationActions): List<DestinationItem> {
+fun getDestinations(actions: AppNavigationActions, personal: PersonalViewModel): List<DestinationItem> {
     DestinationItem.HOME.functions = { actions.navigateToHome() }
-    DestinationItem.PERSON.functions = { actions.navigateToPerson() }
+    DestinationItem.PERSON.functions = {
+        if(personal.complete.value) {
+            actions.navigateToSuccess()
+        } else {
+            actions.navigateToPerson()
+        }
+    }
     DestinationItem.CONTACT.functions = { actions.navigateToContact() }
+    DestinationItem.SUCCESS.functions = { actions.navigateToSuccess() }
 
     return enumValues<DestinationItem>().toList();
 }

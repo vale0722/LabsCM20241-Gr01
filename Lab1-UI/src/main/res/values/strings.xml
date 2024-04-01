@@ -25,4 +25,17 @@
     <string name="error_person">The personal information entered was invalid</string>
     <string name="success">Information created successfully</string>
     <string name="save">Save</string>
+    <string name="next">Next</string>
+    <string name="phone">Phone</string>
+    <string name="phone_placeholder">Enter a phone</string>
+    <string name="email">Email</string>
+    <string name="email_placeholder">Enter an email</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="address">Address</string>
+    <string name="address_placeholder">Enter an address</string>
+    <string name="born">Was born on</string>
+    <string name="personal_info">Personal information</string>
+    <string name="contact_info">Contact information</string>
+    <string name="clear">Clear</string>
 </resources>

@@ -11,7 +11,7 @@
     <string name="name_placeholder">Ingresa un nombre</string>
     <string name="lastname">Apellidos</string>
     <string name="lastname_placeholder">Ingresa los apellidos</string>
-    <string name="gender">Genero</string>
+    <string name="gender">Género</string>
     <string name="male">Masculino</string>
     <string name="female">Femenino</string>
     <string name="birthdate">Fecha de nacimiento</string>
@@ -22,7 +22,20 @@
     <string name="secondary">Secundaria</string>
     <string name="university">Universidad</string>
     <string name="other">Otro</string>
-    <string name="error_person">La información personal ingresada fue invalida</string>
+    <string name="error_person">La información personal ingresada fue inválida</string>
     <string name="success">Información creada exitosamente</string>
     <string name="save">Guardar</string>
+    <string name="next">Siguiente</string>
+    <string name="phone">Teléfono</string>
+    <string name="phone_placeholder">Ingrese el teléfono</string>
+    <string name="email">Correo</string>
+    <string name="email_placeholder">Ingrese el correo eléctronico</string>
+    <string name="country">País</string>
+    <string name="city">Ciudad</string>
+    <string name="address">Dirección</string>
+    <string name="address_placeholder">Ingrese una dirección</string>
+    <string name="born">Nació el</string>
+    <string name="personal_info">Información personal</string>
+    <string name="contact_info">Información de contacto</string>
+    <string name="clear">Limpiar</string>
 </resources>
